@@ -76,17 +76,20 @@ void bb_LED::off()
 
 void bb_LED::fadeOn(int interval)
 {
-  _state = FADE_UP;
-  _stepTime = interval / SLOPE_SIZE;
-  _startTimer();
+  if (_state != LED_ON) {
+    _state = FADE_UP;
+    _stepTime = interval / SLOPE_SIZE;
+    _startTimer();
+  }
 }
 
 void bb_LED::fadeOff(int interval)
 {
-  _state = FADE_DOWN;
-  _stepTime = interval / SLOPE_SIZE;
-  _startTimer();
-
+  if (_state != LED_OFF) {
+      _state = FADE_DOWN;
+    _stepTime = interval / SLOPE_SIZE;
+    _startTimer();
+  }
 }
 
 
@@ -129,7 +132,7 @@ void bb_LED::_startTimer()
 
 void bb_LED::_resetTimer()
 {
-//  _timerOn = true;
+  //  _timerOn = true;
   _timer = millis();
 
 }
