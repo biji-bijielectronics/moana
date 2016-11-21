@@ -9,6 +9,8 @@ int shakeState = 0;
 
 unsigned long last_shake;
 
+int shake_length = 1000;
+
 int prevstate = 0;
 
 enum {OFF, LED1, LED2, LED3, LED4, LED5};
@@ -17,6 +19,7 @@ bb_LED led2(5);
 bb_LED led3(6);
 bb_LED led4(9);
 bb_LED led5(10);
+bb_LED led6(11);
 
 unsigned long last_state_change;
 
@@ -46,15 +49,19 @@ void led_test() {
   led3.fadeOn(512);
   smallWait(255);
   led4.fadeOn(512);
+  led6.fadeOn(512);
   smallWait(255);
   led5.fadeOn(512);
+  
   smallWait(512);
+  
   delay(1000);
   led1.fadeOff(1024);
   led2.fadeOff(1024);
   led3.fadeOff(1024);
   led4.fadeOff(1024);
   led5.fadeOff(1024);
+  led6.fadeOff(1024);
   smallWait(1024);
 }
 
@@ -71,6 +78,8 @@ void loop() {
         led3.off();
         led4.off();
         led5.off();
+        led6.off();
+  
       }
       break;
     case LED1:
@@ -105,10 +114,13 @@ void loop() {
       break;
     case LED4:
       led4.fadeOn(1024);
+      led6.fadeOn(1024);
+      
       wait(3000);
       if (shaking) {
         state = LED5;
       } else {
+        led6.fadeOff(1024);
         led4.fadeOff(1024);
         state = LED3;
       }
@@ -119,6 +131,7 @@ void loop() {
       smallWait(10000);
       state = OFF;
       Serial.println("now here");
+      led6.fadeOff(2024);
       led5.fadeOff(2024);
       led4.fadeOff(2024);
       led3.fadeOff(2024);
@@ -152,7 +165,7 @@ void check_sensor() {
       digitalWrite(ledPin, HIGH);
     }
   }
-  if (millis() - last_shake > 500) {
+  if (millis() - last_shake > shake_length) {
     if (shaking) {
       shaking = 0;
       digitalWrite(ledPin, LOW);
@@ -185,6 +198,8 @@ void runLEDs() {
   led3.run();
   led4.run();
   led5.run();
+  led6.run();
+  
 }
 void smallWait(int interval) {
   unsigned long small_wait = millis();
